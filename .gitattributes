@@ -1,0 +1,18 @@
+# Normalise line endings so the repository is consistent across Windows/Linux clones.
+* text=auto eol=lf
+
+# Windows PowerShell 5.1 needs UTF-8 BOM scripts; CRLF keeps Notepad happy too.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+
+*.slnx text
+*.props text
+*.csproj text
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.ico binary
+*.jar binary
+*.dll binary
+*.exe binary

@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using McDownload.Core.Diagnostics;
 
@@ -53,10 +54,25 @@ public partial class MainWindow : Window
 
     private void OnLogLinesChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add && LogList.Items.Count > 0)
+        if (e.Action != NotifyCollectionChangedAction.Add)
         {
-            LogList.ScrollIntoView(LogList.Items[^1]);
+            return;
         }
+
+        // Scrolling must not run inside CollectionChanged: it re-enters the item container
+        // generator while it is still updating, which throws "ItemsControl is inconsistent
+        // with its items source" when a loader install logs hundreds of lines quickly.
+        Dispatcher.BeginInvoke(new Action(ScrollLogToEnd), DispatcherPriority.Background);
+    }
+
+    private void ScrollLogToEnd()
+    {
+        if (LogList.Items.Count == 0)
+        {
+            return;
+        }
+
+        LogList.ScrollIntoView(LogList.Items[^1]);
     }
 
     private void BrowseButton_Click(object sender, RoutedEventArgs e)

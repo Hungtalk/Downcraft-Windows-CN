@@ -445,9 +445,13 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         }
 
         LogLines.Add(new LogLine(level, message, scope));
-        while (LogLines.Count > 3000)
+        // Drop a chunk at once instead of one line per event to keep the UI collection quiet.
+        if (LogLines.Count > 3000)
         {
-            LogLines.RemoveAt(0);
+            while (LogLines.Count > 2500)
+            {
+                LogLines.RemoveAt(0);
+            }
         }
     }
 

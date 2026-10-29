@@ -108,7 +108,7 @@ mcdl java --install 21     # 下载 Java 21 到 <dir>/runtime（默认 %APPDATA%
 
 ## 图形界面
 
-![界面](images/gui.png)
+![界面](images/gui-progress.png)
 
 - **游戏目录**：默认 `%APPDATA%\.minecraft`；如果该位置不可写（受安全策略限制），
   会自动改选一个可写目录并在日志里说明。可随时「浏览…」更换。

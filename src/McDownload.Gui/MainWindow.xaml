@@ -196,8 +196,7 @@
                         <ListBox x:Name="LogList" Grid.Row="1" ItemsSource="{Binding LogLines}"
                                  BorderThickness="0" Background="#FBFCFE"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 VirtualizingPanel.IsVirtualizing="True"
-                                 VirtualizingPanel.VirtualizationMode="Recycling">
+                                 VirtualizingPanel.IsVirtualizing="False">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Focusable" Value="False" />
