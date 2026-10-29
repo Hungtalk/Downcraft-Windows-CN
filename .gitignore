@@ -1,0 +1,17 @@
+# Build output
+bin/
+obj/
+native/build/
+publish/
+artifacts/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# Runtime scratch produced by tests / manual runs
+.scratch/
+*.log
+tests/**/test-temp/

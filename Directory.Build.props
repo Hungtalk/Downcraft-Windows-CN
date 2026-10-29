@@ -1,0 +1,32 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <!--
+      CA5350: SHA-1 is mandated by the Minecraft file format (assets are addressed by it).
+      CA1305/CA2101/CA1711/CA1869/CA1822/CA1859/CA1054/CA1002: style-only, not worth the noise here.
+    -->
+    <NoWarn>$(NoWarn);CA5350;CA1305;CA2101;CA1711;CA1869;CA1822;CA1859;CA1054;CA1002;CA2227;CA1720;CA1062;CA2007;CA1031</NoWarn>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <NeutralLanguage>zh-Hans</NeutralLanguage>
+    <Company>McDownload</Company>
+    <Product>McDownload</Product>
+    <Version>1.0.0</Version>
+    <Copyright>MIT License</Copyright>
+  </PropertyGroup>
+
+  <!-- Native artifacts are dropped into native/build/out by scripts/build-native.ps1 and
+       copied next to every managed assembly that P/Invokes mcdnative.dll. -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)native/build/out/mcdnative.dll')">
+    <None Include="$(MSBuildThisFileDirectory)native/build/out/mcdnative.dll"
+          Condition="'$(UseWPF)' == 'true' Or '$(OutputType)' == 'Exe'"
+          CopyToOutputDirectory="PreserveNewest"
+          Link="mcdnative.dll" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,128 @@
+{
+  // Download sites used by mcdl. Every entry is pure data: add your own mirror here (or with
+  // `mcdl sources add`) and it immediately participates in downloads.
+  //
+  //   priority   lower wins when latencies are equal (auto mode measures latency first)
+  //   endpoints  keyed by ArtifactKind; a template that cannot be filled is skipped for that file
+  //   useOriginalUrl  serve kinds without a template from the canonical URL in the version JSON
+  //
+  // Placeholders: {version} {minecraftVersion} {loader} {path} {hash} {hash2}
+  //               {index} {component} {platform} {file} {sha1} {url}
+  "version": 1,
+  "sources": [
+    {
+      "id": "mojang",
+      "displayName": "Mojang 官方",
+      "region": "global",
+      "priority": 100,
+      "enabled": true,
+      "useOriginalUrl": true,
+      "probeUrl": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+      "homepage": "https://www.minecraft.net/zh-hans/download",
+      "note": "官方源，全球可用；中国大陆直连速度一般。",
+      "endpoints": {
+        "versionManifest": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+        "clientJar": "https://piston-data.mojang.com/v1/objects/{sha1}/client.jar",
+        "assetObject": "https://resources.download.minecraft.net/{hash2}/{hash}",
+        "library": "https://libraries.minecraft.net/{path}",
+        "javaRuntimeManifest": "https://launchermeta.mojang.com/v1/products/java-runtime/2ec0cc96c44e5a76b9c8b7c39df7210883d12871/all.json"
+      }
+    },
+    {
+      "id": "bmclapi",
+      "displayName": "BMCLAPI（国内镜像）",
+      "region": "cn",
+      "priority": 150,
+      "enabled": true,
+      "probeUrl": "https://bmclapi2.bangbang93.com/mc/game/version_manifest_v2.json",
+      "homepage": "https://bmclapi2.bangbang93.com/",
+      "note": "国内加速镜像，覆盖版本、客户端、资源文件、Fabric 元数据、NeoForge Maven、Java 运行时；个别 Maven 文件可能被上游镜像拦截（自动回退官方）。",
+      "endpoints": {
+        "versionManifest": "https://bmclapi2.bangbang93.com/mc/game/version_manifest_v2.json",
+        "versionJson": "https://bmclapi2.bangbang93.com/version/{version}/json",
+        "clientJar": "https://bmclapi2.bangbang93.com/version/{version}/client",
+        "assetObject": "https://bmclapi2.bangbang93.com/assets/{hash2}/{hash}",
+        "library": { "url": "https://bmclapi2.bangbang93.com/maven/{path}", "priority": 250 },
+        "fabricLoaderList": "https://bmclapi2.bangbang93.com/fabric-meta/v2/versions/loader/{version}",
+        "fabricProfile": "https://bmclapi2.bangbang93.com/fabric-meta/v2/versions/loader/{version}/{loader}/profile/json",
+        "forgeInstaller": { "url": "https://bmclapi2.bangbang93.com/maven/{path}", "priority": 900 },
+        "forgeMavenMetadata": { "url": "https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/maven-metadata.xml", "priority": 900 },
+        "neoforgeInstaller": "https://bmclapi2.bangbang93.com/maven/{path}",
+        "neoforgeMavenMetadata": "https://bmclapi2.bangbang93.com/maven/net/neoforged/neoforge/maven-metadata.xml",
+        "neoforgeLegacyMavenMetadata": "https://bmclapi2.bangbang93.com/maven/net/neoforged/forge/maven-metadata.xml",
+        "javaRuntimeManifest": "https://bmclapi2.bangbang93.com/v1/products/java-runtime/2ec0cc96c44e5a76b9c8b7c39df7210883d12871/all.json"
+      }
+    },
+    {
+      "id": "fabric",
+      "displayName": "Fabric 官方（meta / maven）",
+      "region": "global",
+      "priority": 300,
+      "enabled": true,
+      "probeUrl": "https://meta.fabricmc.net/v2/versions/loader",
+      "homepage": "https://fabricmc.net/",
+      "note": "Fabric Loader 版本列表与 profile JSON。",
+      "endpoints": {
+        "fabricLoaderList": "https://meta.fabricmc.net/v2/versions/loader/{version}",
+        "fabricProfile": "https://meta.fabricmc.net/v2/versions/loader/{version}/{loader}/profile/json"
+      }
+    },
+    {
+      "id": "quilt",
+      "displayName": "Quilt 官方（meta / maven）",
+      "region": "global",
+      "priority": 310,
+      "enabled": true,
+      "probeUrl": "https://meta.quiltmc.org/v3/versions/loader",
+      "homepage": "https://quiltmc.org/",
+      "note": "Quilt Loader 版本列表与 profile JSON。",
+      "endpoints": {
+        "quiltLoaderList": "https://meta.quiltmc.org/v3/versions/loader/{version}",
+        "quiltProfile": "https://meta.quiltmc.org/v3/versions/loader/{version}/{loader}/profile/json"
+      }
+    },
+    {
+      "id": "forge",
+      "displayName": "Forge 官方 Maven",
+      "region": "global",
+      "priority": 400,
+      "enabled": true,
+      "probeUrl": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+      "homepage": "https://files.minecraftforge.net/",
+      "note": "Forge 安装器与版本列表；BMCLAPI 不镜像 Forge 安装器，官方为主。",
+      "endpoints": {
+        "forgeInstaller": "https://maven.minecraftforge.net/{path}",
+        "forgeMavenMetadata": "https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml",
+        "forgePromotions": "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"
+      }
+    },
+    {
+      "id": "neoforge",
+      "displayName": "NeoForge 官方 Maven",
+      "region": "global",
+      "priority": 410,
+      "enabled": true,
+      "probeUrl": "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml",
+      "homepage": "https://neoforged.net/",
+      "note": "NeoForge 安装器与版本列表；部分地区无法直连时自动切到 BMCLAPI。",
+      "endpoints": {
+        "neoforgeInstaller": "https://maven.neoforged.net/releases/{path}",
+        "neoforgeMavenMetadata": "https://maven.neoforged.net/releases/net/neoforged/neoforge/maven-metadata.xml",
+        "neoforgeLegacyMavenMetadata": "https://maven.neoforged.net/releases/net/neoforged/forge/maven-metadata.xml"
+      }
+    },
+    {
+      "id": "aliyun-maven",
+      "displayName": "阿里云 Maven 中央仓库镜像",
+      "region": "cn",
+      "priority": 900,
+      "enabled": true,
+      "probeUrl": "https://maven.aliyun.com/repository/public/org/ow2/asm/asm/maven-metadata.xml",
+      "homepage": "https://developer.aliyun.com/mvn/guide",
+      "note": "仅作为普通库（Maven Central 上的依赖）的最后兜底，不包含 Forge/Fabric 专有构件。",
+      "endpoints": {
+        "library": { "url": "https://maven.aliyun.com/repository/public/{path}", "priority": 900 }
+      }
+    }
+  ]
+}

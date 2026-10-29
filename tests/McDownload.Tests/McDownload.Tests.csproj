@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>McDownload.Tests</RootNamespace>
+    <AssemblyName>McDownload.Tests</AssemblyName>
+  </PropertyGroup>
+
+  <!--
+    xunit.v3 runs on Microsoft.Testing.Platform (MTP). The root global.json selects the MTP
+    runner for `dotnet test`, which the .NET 10 SDK requires (VSTest mode is deprecated there).
+  -->
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\McDownload.Core\McDownload.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
