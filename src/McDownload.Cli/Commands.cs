@@ -42,7 +42,7 @@ internal static class Commands
 
         var loader = ParseLoader(parser.Value("loader", "l", "modloader"));
         var loaderVersion = parser.Value("loader-version", "lv", "loaderVersion");
-        var version = parser.Positionals.FirstOrDefault();
+        var version = parser.Positionals.Count > 0 ? parser.Positionals[0] : null;
 
         if (string.IsNullOrWhiteSpace(version) || version.Equals("latest", StringComparison.OrdinalIgnoreCase))
         {
@@ -251,7 +251,7 @@ internal static class Commands
             return Program.ExitUsage;
         }
 
-        var version = parser.Positionals.FirstOrDefault();
+        var version = parser.Positionals.Count > 0 ? parser.Positionals[0] : null;
         if (string.IsNullOrWhiteSpace(version) || version.Equals("latest", StringComparison.OrdinalIgnoreCase))
         {
             var manifest = await new MinecraftCatalog(catalog).GetManifestAsync(null, false, reporter, cancellationToken);
@@ -298,7 +298,7 @@ internal static class Commands
     public static async Task<int> SourcesAsync(ArgParser parser, CancellationToken cancellationToken)
     {
         var reporter = CreateReporter(parser);
-        var sub = parser.Positionals.FirstOrDefault()?.ToLowerInvariant() ?? "list";
+        var sub = (parser.Positionals.Count > 0 ? parser.Positionals[0] : null)?.ToLowerInvariant() ?? "list";
         var path = SourceCatalog.UserConfigPath;
 
         switch (sub)

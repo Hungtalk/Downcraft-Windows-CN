@@ -64,7 +64,7 @@ public sealed record LoaderOption(string Name, LoaderKind Kind);
 public sealed record SourceModeOption(string Name, IReadOnlyList<string> Order, bool PreferPriority, bool Probe);
 
 /// <summary>View model behind the single window; owns the installer run and all UI state.</summary>
-public sealed class MainViewModel : INotifyPropertyChanged
+public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 {
     public const string LatestLoaderVersionLabel = "最新（自动）";
 
@@ -316,7 +316,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             }
 
             SelectedLoaderVersion = LatestLoaderVersionLabel;
-            AppendLog(LogLevel.Info, $"{SelectedLoader.Name} 可用版本 {versions.Count} 个（最新 {versions.FirstOrDefault() ?? "无"}）", "Loader");
+            AppendLog(LogLevel.Info, $"{SelectedLoader.Name} 可用版本 {versions.Count} 个（最新 {(versions.Count > 0 ? versions[0] : "无")}）", "Loader");
         }
         catch (Exception ex)
         {
@@ -424,6 +424,14 @@ public sealed class MainViewModel : INotifyPropertyChanged
         catch (ObjectDisposedException)
         {
         }
+    }
+
+    /// <summary>Releases the cancellation source when the window closes.</summary>
+    public void Dispose()
+    {
+        _cancellation?.Cancel();
+        _cancellation?.Dispose();
+        _cancellation = null;
     }
 
     /// <summary>Called by <see cref="UiReporter"/>; safe from any thread.</summary>

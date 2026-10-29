@@ -7,6 +7,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>McDownload.Tests</RootNamespace>
     <AssemblyName>McDownload.Tests</AssemblyName>
+    <!-- CA1861/xUnit1051 are style-only in tests (literal arrays are clearer than fields). -->
+    <NoWarn>$(NoWarn);CA1861;xUnit1051</NoWarn>
   </PropertyGroup>
 
   <!--

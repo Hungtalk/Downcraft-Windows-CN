@@ -8,6 +8,10 @@ using McDownload.Core.Diagnostics;
 namespace McDownload.Gui;
 
 /// <summary>Single window: settings on the left, live progress and log on the right.</summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Design",
+    "CA1001:Types that own disposable fields should be disposable",
+    Justification = "A WPF Window cannot implement IDisposable; the view model is disposed in OnClosed.")]
 public partial class MainWindow : Window
 {
     private readonly MainViewModel _viewModel;
@@ -126,7 +130,7 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
-        _viewModel.Cancel();
+        _viewModel.Dispose();
         base.OnClosed(e);
     }
 }
