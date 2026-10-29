@@ -1,15 +1,47 @@
-# McDownload
+<p align="center">
+  <img src="assets/logo/downcraft-256.png" width="112" alt="DownCraft logo">
+</p>
+
+<h1 align="center">DownCraft</h1>
+
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512bd4.svg">
+  <img alt="Windows 10/11 x64" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078d4.svg">
+  <a href="CHANGELOG.md"><img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-success.svg"></a>
+</p>
 
 **给「不支持下载游戏本体」的第三方启动器准备的 Minecraft 下载器。**
 它把原版（Vanilla）和 **Forge / NeoForge / Fabric / Quilt** 装成一份标准的 `.minecraft` 目录，
 装完就能在 HMCL、PCL2、PrismLauncher、官方启动器等任意启动器里直接选版本启动。
 
-- C++ 原生模块（`mcdnative.dll`）+ .NET 10 跨层实现：原生负责 SHA-1 / ZIP 解压等热路径，
+- C++ 原生模块（`downcraft_native.dll`）+ .NET 10 跨层实现：原生负责 SHA-1 / ZIP 解压等热路径，
   缺失时自动退回纯托管实现，**不会因为没编译 C++ 就跑不起来**。
-- 命令行 `mcdl` 与 WPF 图形界面 `McDownload.Gui` 共用同一套核心库（`McDownload.Core`）。
+- 命令行 `downcraft` 与 WPF 图形界面 `DownCraft.Gui` 共用同一套核心库（`DownCraft.Core`）。
 - 多下载站、按实测延迟自动排序、单文件失败自动换源、断点续传、SHA-1 全量校验。
 
-![McDownload 界面](docs/images/gui.png)
+![DownCraft 界面](docs/images/gui.png)
+
+## 下载与安装
+
+到 [Releases](https://github.com/hungtalk/DownCraft/releases) 下载对应压缩包：
+
+| 包 | 说明 |
+| --- | --- |
+| `DownCraft-<版本>-win-x64.zip` | **自包含**，解压即用，目标机不需要安装 .NET |
+| `DownCraft-<版本>-win-x64-lite.zip` | 体积小，需要 .NET 10 Desktop Runtime |
+
+解压后是一个 `DownCraft` 目录：
+
+```
+DownCraft/
+├─ downcraft.exe           命令行
+├─ DownCraft.Gui.exe       图形界面
+├─ downcraft_native.dll    原生加速模块
+├─ README.md / LICENSE / CHANGELOG.md
+```
+
+校验和在同一次 Release 的 `SHA256SUMS.txt` 里。也可以从源码构建，见下文。
 
 ---
 
@@ -17,7 +49,7 @@
 
 不少启动器（尤其是只做「启动」不做「下载」的第三方启动器、某些整合包外壳、内网/离线环境）
 只会读取 `.minecraft` 里现成的版本，遇到「游戏本体或加载器还没下载」就直接报错。
-McDownload 补齐这一环：按官方元数据把文件放到正确位置，并写好 `launcher_profiles.json`，
+DownCraft 补齐这一环：按官方元数据把文件放到正确位置，并写好 `launcher_profiles.json`，
 剩下的交给启动器。
 
 ## 功能一览
@@ -31,8 +63,8 @@ McDownload 补齐这一环：按官方元数据把文件放到正确位置，并
 | Java 运行时 | 本机没 Java 时自动下载 Mojang 官方运行时（`java-runtime-gamma`/`delta` 等），供 Forge/NeoForge 安装器使用 |
 | 加载器依赖预置 | 解析安装器内的 `install_profile.json`，**先用镜像把安装器要用的库下好**，绕开被墙的 `maven.neoforged.net` |
 | 启动器兼容 | 写入标准 `versions/<id>/<id>.json`（加载器用 `inheritsFrom`）与 `launcher_profiles.json` |
-| 完整性校验 | `mcdl verify` 只读校验，报告缺失/损坏文件，便于离线环境自检 |
-| 诊断 | `mcdl doctor` 检查网络、各下载源延迟、Java、磁盘空间 |
+| 完整性校验 | `downcraft verify` 只读校验，报告缺失/损坏文件，便于离线环境自检 |
+| 诊断 | `downcraft doctor` 检查网络、各下载源延迟、Java、磁盘空间 |
 
 ## 下载源
 
@@ -53,7 +85,7 @@ McDownload 补齐这一环：按官方元数据把文件放到正确位置，并
 ### 图形界面
 
 ```powershell
-dotnet run --project src/McDownload.Gui        # 或运行构建产物 McDownload.Gui.exe
+dotnet run --project src/DownCraft.Gui        # 或运行构建产物 DownCraft.Gui.exe
 ```
 
 选择目录 → 选版本 → 选加载器（加载器版本留空即最新稳定版）→ 开始下载 / 安装。
@@ -62,20 +94,20 @@ dotnet run --project src/McDownload.Gui        # 或运行构建产物 McDownloa
 
 ```powershell
 # 原版（默认装到 %APPDATA%\.minecraft）
-mcdl install 1.20.1
+downcraft install 1.20.1
 
 # Fabric / Quilt（纯元数据合并，不需要 Java，几秒完成）
-mcdl install 1.20.1 --loader fabric
-mcdl install 1.20.1 --loader quilt
+downcraft install 1.20.1 --loader fabric
+downcraft install 1.20.1 --loader quilt
 
 # Forge / NeoForge（自动下载 Java 运行时并执行官方安装器）
-mcdl install 1.20.1 --loader forge
-mcdl install 1.21.1 --loader neoforge --loader-version 21.1.265
+downcraft install 1.20.1 --loader forge
+downcraft install 1.21.1 --loader neoforge --loader-version 21.1.265
 
 # 指定目录、指定源顺序、只看结果
-mcdl install 1.21.4 -d "D:\Games\.minecraft" --source bmclapi,mojang
-mcdl verify 1.20.1 --loader fabric -d "D:\Games\.minecraft"
-mcdl doctor
+downcraft install 1.21.4 -d "D:\Games\.minecraft" --source bmclapi,mojang
+downcraft verify 1.20.1 --loader fabric -d "D:\Games\.minecraft"
+downcraft doctor
 ```
 
 完整参数见 [docs/USAGE.md](docs/USAGE.md)。
@@ -96,7 +128,7 @@ mcdl doctor
 │  └─ log_configs/client-1.12.xml     日志配置
 ├─ runtime/java-runtime-delta/…       按需下载的 Java 运行时
 ├─ launcher_profiles.json             启动器可见的版本条目
-└─ .mcdl/                             mcdl 自己的缓存/安装器/源健康数据（可删）
+└─ .downcraft/                        DownCraft 自己的缓存/安装器/源健康数据（可删）
 ```
 
 这就是官方启动器与主流第三方启动器共同认可的目录结构，因此「放置文件夹」即可被识别。
@@ -106,14 +138,16 @@ Forge 为 `1.20.1-forge-47.4.28`，NeoForge 为 `neoforge-21.1.265`。
 ## 项目结构
 
 ```
-mcdownload/
-├─ src/McDownload.Core/      核心库：下载、元数据、镜像路由、安装计划、加载器、Java
-├─ src/McDownload.Cli/       命令行 mcdl
-├─ src/McDownload.Gui/       WPF 图形界面
-├─ native/                   C++ 原生模块（SHA-1 / CRC32 / ZIP，C ABI）
-├─ tests/McDownload.Tests/   xunit.v3 单元测试（148 个）
-├─ scripts/                  build-native / build / publish / smoke-test
-└─ docs/                     架构、下载源、用法文档
+DownCraft/
+├─ src/DownCraft.Core/      核心库：下载、元数据、镜像路由、安装计划、加载器、Java
+├─ src/DownCraft.Cli/       命令行 downcraft
+├─ src/DownCraft.Gui/       WPF 图形界面（含 logo/图标资源）
+├─ native/                  C++ 原生模块（SHA-1 / CRC32 / ZIP，C ABI）
+├─ tests/DownCraft.Tests/   xunit.v3 单元测试（148 个）
+├─ assets/logo/             logo 源文件（SVG）与多尺寸 PNG/ICO
+├─ scripts/                 build-native / build / publish / release / smoke-test
+├─ docs/                    架构、下载源、用法、发布流程
+└─ .github/workflows/       CI（构建+测试）与发布流水线
 ```
 
 模块划分与数据流见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
@@ -130,15 +164,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build.ps1
 # 只编 C#
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build.ps1 -SkipNative
 
-# 发布（可选自包含 / 单文件）
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\publish.ps1 -SelfContained
+# 打发布包（自包含 + 框架依赖 + SHA256SUMS）
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release.ps1
 ```
 
 构建产物：
 
-- `src/McDownload.Cli/bin/Release/net10.0/mcdl.exe`
-- `src/McDownload.Gui/bin/Release/net10.0-windows/McDownload.Gui.exe`
-- `native/build/out/mcdnative.dll`（构建时自动复制到上面两个目录）
+- `src/DownCraft.Cli/bin/Release/net10.0/downcraft.exe`
+- `src/DownCraft.Gui/bin/Release/net10.0-windows/DownCraft.Gui.exe`
+- `native/build/out/downcraft_native.dll`（构建时自动复制到上面两个目录）
+
+发布包在 `artifacts/release/`。发布流程见 [docs/RELEASING.md](docs/RELEASING.md)。
 
 > PowerShell 默认执行策略可能禁止运行本地脚本，用 `powershell -ExecutionPolicy Bypass -File ...`；
 > 脚本保存为 UTF-8 **带 BOM**，以保证 Windows PowerShell 5.1 正确显示中文。
@@ -147,11 +183,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\publish.ps1 -SelfCon
 
 ```powershell
 # xunit.v3 运行在 Microsoft.Testing.Platform 上，测试项目本身是可执行程序
-dotnet build tests\McDownload.Tests
-tests\McDownload.Tests\bin\Debug\net10.0\McDownload.Tests.exe
+dotnet build tests\DownCraft.Tests
+tests\DownCraft.Tests\bin\Debug\net10.0\DownCraft.Tests.exe
 
 # 也可以（需要允许命名管道；部分安全软件会拦截）
-dotnet test tests\McDownload.Tests
+dotnet test tests\DownCraft.Tests
 ```
 
 真实网络冒烟测试（会下载若干 MB 到 `.scratch/`，不会碰你真实的 `.minecraft`）：
@@ -174,7 +210,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\smoke-test.ps1 -Load
 | Forge 1.20.1（47.4.28） | 自动装 Java 17 运行时，官方安装器执行成功 |
 | NeoForge 1.21.1（21.1.265） | 自动装 Java 21 运行时；官方 Maven 不可达时经 BMCLAPI 预置依赖后成功 |
 | 断点/幂等 | 重复执行时 74 个文件全部跳过 |
-| 完整性校验 | `mcdl verify` 74 个文件正常，0 损坏 |
+| 完整性校验 | `downcraft verify` 74 个文件正常，0 损坏 |
 | 单元测试 | 148 个通过 |
 | GUI | 通过 UI Automation 真实点「开始下载 / 安装」完成一次安装 |
 
@@ -198,4 +234,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\smoke-test.ps1 -Load
 
 ## 许可证
 
-MIT，见 [LICENSE](LICENSE)。
+MIT，见 [LICENSE](LICENSE)。更新记录见 [CHANGELOG.md](CHANGELOG.md)。
+
+---
+
+其他文档：[架构](docs/ARCHITECTURE.md) · [下载源](docs/SOURCES.md) · [用法](docs/USAGE.md) · [发布流程](docs/RELEASING.md)

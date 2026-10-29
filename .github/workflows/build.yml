@@ -18,16 +18,16 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Build solution
-        run: dotnet build McDownload.slnx -c Release --nologo
+        run: dotnet build DownCraft.slnx -c Release --nologo
 
       # The test project is an xunit.v3 / Microsoft.Testing.Platform executable, so it runs
       # directly instead of going through `dotnet test` (which needs a named-pipe handshake
       # that some locked-down runners block).
       - name: Run unit tests
-        run: tests/McDownload.Tests/bin/Release/net10.0/McDownload.Tests.exe
+        run: tests/DownCraft.Tests/bin/Release/net10.0/DownCraft.Tests.exe
 
   native:
-    name: native helper (mcdnative.dll)
+    name: native helper (downcraft_native.dll)
     runs-on: windows-latest
     # The managed build and all tests pass without the DLL (managed fallback), so a toolchain
     # hiccup on the runner should not turn the whole workflow red.
@@ -35,12 +35,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build mcdnative.dll
+      - name: Build downcraft_native.dll
         shell: pwsh
         run: ./scripts/build-native.ps1
 
       - uses: actions/upload-artifact@v4
         with:
-          name: mcdnative
-          path: native/build/out/mcdnative.dll
+          name: downcraft_native
+          path: native/build/out/downcraft_native.dll
           if-no-files-found: warn

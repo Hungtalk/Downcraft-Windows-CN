@@ -1,7 +1,7 @@
 ﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
-    Builds mcdnative.dll and mcdl_native_test.exe with MSVC (x64, static CRT).
+    Builds downcraft_native.dll and downcraft_native_test.exe with MSVC (x64, static CRT).
 
 .DESCRIPTION
     Locates Visual Studio with vswhere.exe, initializes the x64 developer
@@ -38,8 +38,8 @@ $scriptDir = $PSScriptRoot
 $repoRoot = Split-Path -Parent $scriptDir
 $nativeDir = Join-Path $repoRoot 'native'
 $buildDir = Join-Path $nativeDir 'build'
-$dllPath = Join-Path $buildDir 'out\mcdnative.dll'
-$testPath = Join-Path $buildDir 'out\mcdl_native_test.exe'
+$dllPath = Join-Path $buildDir 'out\downcraft_native.dll'
+$testPath = Join-Path $buildDir 'out\downcraft_native_test.exe'
 
 if (-not (Test-Path -LiteralPath (Join-Path $nativeDir 'CMakeLists.txt'))) {
     Fail "native/CMakeLists.txt was not found under '$repoRoot'."
@@ -175,7 +175,7 @@ $toolPathPrefix = (@($toolPaths | Select-Object -Unique) -join ';')
 # Build through a temporary batch file so quoting is handled by cmd.exe itself.
 # ---------------------------------------------------------------------------
 $tempRoot = if ($env:TEMP) { $env:TEMP } else { $repoRoot }
-$shimDir = Join-Path $tempRoot ("mcdl-build-" + [guid]::NewGuid().ToString('N'))
+$shimDir = Join-Path $tempRoot ("downcraft-build-" + [guid]::NewGuid().ToString('N'))
 $shimPath = Join-Path $shimDir 'build.cmd'
 
 function Convert-ToBatchLiteral {
@@ -193,15 +193,15 @@ $shimLines.Add('@echo off')
 $shimLines.Add('setlocal EnableExtensions')
 if ($batchVcvars.Length -gt 0) {
     $shimLines.Add("call `"$batchVcvars`" >nul 2>&1")
-    $shimLines.Add('if errorlevel 1 goto mcdl_try_vsdevcmd')
-    $shimLines.Add('goto mcdl_env_ready')
+    $shimLines.Add('if errorlevel 1 goto dc_try_vsdevcmd')
+    $shimLines.Add('goto dc_env_ready')
 }
-$shimLines.Add(':mcdl_try_vsdevcmd')
+$shimLines.Add(':dc_try_vsdevcmd')
 if ($batchVsdev.Length -gt 0) {
     $shimLines.Add("call `"$batchVsdev`" -arch=x64 -host_arch=x64 >nul 2>&1")
 }
 $shimLines.Add('if errorlevel 1 exit /b 10')
-$shimLines.Add(':mcdl_env_ready')
+$shimLines.Add(':dc_env_ready')
 # Force English MSVC diagnostics so Ninja can parse /showIncludes on localized
 # installations (otherwise the whole include tree is dumped to the console).
 $shimLines.Add('set "VSLANG=1033"')
@@ -211,10 +211,10 @@ $shimLines.Add('if not defined VCToolsInstallDir exit /b 11')
 # Some VS installs ship only the OneCore CRT import/static libraries. /MT needs
 # libcmt.lib, so fall back to the OneCore library directory when the desktop one
 # is absent.
-$shimLines.Add('if exist "%VCToolsInstallDir%lib\x64\libcmt.lib" goto mcdl_crt_ready')
-$shimLines.Add('if not exist "%VCToolsInstallDir%lib\onecore\x64\libcmt.lib" goto mcdl_crt_ready')
+$shimLines.Add('if exist "%VCToolsInstallDir%lib\x64\libcmt.lib" goto dc_crt_ready')
+$shimLines.Add('if not exist "%VCToolsInstallDir%lib\onecore\x64\libcmt.lib" goto dc_crt_ready')
 $shimLines.Add('set "LIB=%VCToolsInstallDir%lib\onecore\x64;%LIB%"')
-$shimLines.Add(':mcdl_crt_ready')
+$shimLines.Add(':dc_crt_ready')
 if ($batchToolPath.Length -gt 0) {
     # Append rather than prepend: the WinGet tool directory also contains
     # MinGW's c++.exe, and prepending it would make CMake pick GCC over cl.exe.

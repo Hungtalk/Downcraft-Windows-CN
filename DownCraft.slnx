@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DownCraft.Cli/DownCraft.Cli.csproj" />
+    <Project Path="src/DownCraft.Core/DownCraft.Core.csproj" />
+    <Project Path="src/DownCraft.Gui/DownCraft.Gui.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DownCraft.Tests/DownCraft.Tests.csproj" />
+  </Folder>
+</Solution>

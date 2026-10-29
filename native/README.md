@@ -1,30 +1,30 @@
-# mcdnative
+# downcraft_native
 
-Small, dependency-free x64 Windows helper DLL for McDownload. It exports the C ABI
-declared in [`include/mcdl_native.h`](include/mcdl_native.h), which the managed
+Small, dependency-free x64 Windows helper DLL for DownCraft. It exports the C ABI
+declared in [`include/downcraft_native.h`](include/downcraft_native.h), which the managed
 application consumes through
-`DllImport("mcdnative.dll", CallingConvention = CallingConvention.Cdecl)`.
+`DllImport("downcraft_native.dll", CallingConvention = CallingConvention.Cdecl)`.
 
 The native component is optional: every managed call site keeps a managed
-fallback, so the product still works when `mcdnative.dll` is missing.
+fallback, so the product still works when `downcraft_native.dll` is missing.
 
 ## Exports
 
 | Export | Result | Notes |
 | --- | --- | --- |
-| `mcdl_version()` | `const char*` | Static banner, valid for the process lifetime. |
-| `mcdl_sha1_file(path, out_hex)` | `MCDL_OK` / error | Streams the file in 1 MiB chunks; writes 40 lowercase hex chars + NUL. |
-| `mcdl_sha1_bytes(data, len, out_hex)` | `MCDL_OK` / error | In-memory buffer; `data == NULL` is accepted only when `len == 0`. |
-| `mcdl_crc32_file(path, out_crc)` | `MCDL_OK` / error | IEEE 802.3 CRC-32 (same polynomial as zlib). |
-| `mcdl_zip_entry_size(zip, name, out_size)` | `1` found, `0` missing, negative error | Looks up the central directory. |
-| `mcdl_zip_read(zip, name, buffer, size, out_written)` | `MCDL_OK` / error | Fails with `MCDL_ERR_BUFFER` when the entry is larger than `buffer`. |
-| `mcdl_zip_extract(zip, name, dest_path)` | `MCDL_OK` / error | Creates parent directories, overwrites the destination file. |
-| `mcdl_zip_extract_all(zip, dest_dir, excludes, count)` | file count / error | Skips directories and excluded prefixes; zip-slip names are rejected. |
-| `mcdl_disk_free(path, out_free)` | `MCDL_OK` / error | `GetDiskFreeSpaceExW` available bytes for the volume. |
+| `dc_version()` | `const char*` | Static banner, valid for the process lifetime. |
+| `dc_sha1_file(path, out_hex)` | `DC_OK` / error | Streams the file in 1 MiB chunks; writes 40 lowercase hex chars + NUL. |
+| `dc_sha1_bytes(data, len, out_hex)` | `DC_OK` / error | In-memory buffer; `data == NULL` is accepted only when `len == 0`. |
+| `dc_crc32_file(path, out_crc)` | `DC_OK` / error | IEEE 802.3 CRC-32 (same polynomial as zlib). |
+| `dc_zip_entry_size(zip, name, out_size)` | `1` found, `0` missing, negative error | Looks up the central directory. |
+| `dc_zip_read(zip, name, buffer, size, out_written)` | `DC_OK` / error | Fails with `DC_ERR_BUFFER` when the entry is larger than `buffer`. |
+| `dc_zip_extract(zip, name, dest_path)` | `DC_OK` / error | Creates parent directories, overwrites the destination file. |
+| `dc_zip_extract_all(zip, dest_dir, excludes, count)` | file count / error | Skips directories and excluded prefixes; zip-slip names are rejected. |
+| `dc_disk_free(path, out_free)` | `DC_OK` / error | `GetDiskFreeSpaceExW` available bytes for the volume. |
 
-Error codes (negative): `MCDL_ERR_ARG` -1, `MCDL_ERR_IO` -2,
-`MCDL_ERR_NOTFOUND` -3, `MCDL_ERR_FORMAT` -4, `MCDL_ERR_MEMORY` -5,
-`MCDL_ERR_BUFFER` -6, `MCDL_ERR_INTERNAL` -7.
+Error codes (negative): `DC_ERR_ARG` -1, `DC_ERR_IO` -2,
+`DC_ERR_NOTFOUND` -3, `DC_ERR_FORMAT` -4, `DC_ERR_MEMORY` -5,
+`DC_ERR_BUFFER` -6, `DC_ERR_INTERNAL` -7.
 
 Conventions: paths are UTF-16 (`wchar_t`), ZIP entry names are UTF-8, `out_hex`
 points to at least 41 bytes, and every output parameter is zeroed on failure.
@@ -46,8 +46,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build-native.ps1 -Cl
 Outputs:
 
 ```
-native/build/out/mcdnative.dll
-native/build/out/mcdl_native_test.exe
+native/build/out/downcraft_native.dll
+native/build/out/downcraft_native_test.exe
 ```
 
 The script discovers Visual Studio with `vswhere.exe` (falling back to standard
@@ -79,14 +79,14 @@ The DLL and tests are built with the static CRT (`/MT`), C++20, `/W4`,
 - **ZIP**: hand-written EOCD scan, central-directory parse and local-header data
   offset calculation. Stored (method 0) and deflate (method 8) are supported.
   ZIP64 (`0xFFFF`/`0xFFFFFFFF` EOCD or entry fields) is rejected with
-  `MCDL_ERR_FORMAT` instead of mis-parsing. Encrypted, multi-disk and other
-  compression methods are rejected with `MCDL_ERR_FORMAT`.
+  `DC_ERR_FORMAT` instead of mis-parsing. Encrypted, multi-disk and other
+  compression methods are rejected with `DC_ERR_FORMAT`.
 - **DEFLATE**: ntdll `RtlGetCompressionWorkSpaceSize` +
   `RtlDecompressBufferEx(COMPRESSION_FORMAT_DEFLATE)` is the primary path.
   Windows 10's ntdll reports `STATUS_COMPRESSION_NOT_SUPPORTED (0xC000025F)` for
   that format, so a self-contained RFC 1951 inflate implementation is used as a
   fallback. No third-party code or libraries are involved.
-- **Zip-slip protection** (`mcdl_zip_extract_all`): rejects absolute names,
+- **Zip-slip protection** (`dc_zip_extract_all`): rejects absolute names,
   drive letters, colons (drive/ADS), `..` segments, and segments ending in dots
   or spaces that Windows would strip; skips directory entries; excluded prefixes
   are compared case-insensitively (ASCII) before extraction.
@@ -113,14 +113,14 @@ The DLL and tests are built with the static CRT (`/MT`), C++20, `/W4`,
 
 ## Limitations
 
-- ZIP64 archives are not extracted (explicit `MCDL_ERR_FORMAT`).
+- ZIP64 archives are not extracted (explicit `DC_ERR_FORMAT`).
 - Only stored and deflate entries are supported; encrypted entries, multi-disk
   archives and other compression methods are rejected.
 - Entry names must be valid UTF-8 (plain ASCII works everywhere). Non-UTF-8
   legacy code-page names are rejected.
 - Paths longer than `MAX_PATH` are not handled with the `\\?\` prefix; natives
   archive paths are short.
-- `mcdl_zip_read` requires a non-NULL buffer even for a zero-length entry.
-- `mcdl_zip_extract_all` validates entry names before exclusion checks, so an
+- `dc_zip_read` requires a non-NULL buffer even for a zero-length entry.
+- `dc_zip_extract_all` validates entry names before exclusion checks, so an
   archive containing a malicious entry fails even if that entry would have been
   skipped.

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="DownCraft">
+  <title>DownCraft</title>
+  <desc>Download arrow descending into an open tray, on a blue to violet rounded badge.</desc>
+
+  <defs>
+    <linearGradient id="downcraft-badge" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Badge: the only filled shape; everything outside is transparent. -->
+  <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="url(#downcraft-badge)"/>
+
+  <!-- Subtle top gloss: white at 7%. -->
+  <rect x="24" y="24" width="464" height="208" rx="88" ry="88" fill="#FFFFFF" fill-opacity="0.07"/>
+
+  <!-- Download tray (open top) and descending arrow. -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 128 292 V 364 A 44 44 0 0 0 172 408 H 340 A 44 44 0 0 0 384 364 V 292"/>
+    <path d="M 256 96 V 224"/>
+    <path d="M 176 184 L 256 264 L 336 184"/>
+  </g>
+</svg>

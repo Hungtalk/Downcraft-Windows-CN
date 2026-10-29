@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>downcraft</AssemblyName>
+    <RootNamespace>DownCraft.Cli</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DownCraft.Core\DownCraft.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -9,7 +9,7 @@
 
 .NOTES
     Self-contained publishes do not need the .NET 10 runtime on the target machine.
-    PublishSingleFile keeps mcdnative.dll next to the executable (it is loaded via P/Invoke).
+    PublishSingleFile keeps downcraft_native.dll next to the executable (it is loaded via P/Invoke).
 #>
 [CmdletBinding()]
 param(
@@ -26,8 +26,8 @@ $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
 
 try {
-    $cli = Join-Path $root 'src\McDownload.Cli\McDownload.Cli.csproj'
-    $gui = Join-Path $root 'src\McDownload.Gui\McDownload.Gui.csproj'
+    $cli = Join-Path $root 'src\DownCraft.Cli\DownCraft.Cli.csproj'
+    $gui = Join-Path $root 'src\DownCraft.Gui\DownCraft.Gui.csproj'
     $cliOut = Join-Path $Output 'cli'
     $guiOut = Join-Path $Output 'gui'
 
@@ -53,9 +53,9 @@ try {
 
     Write-Host ''
     Write-Host 'Publish succeeded.' -ForegroundColor Green
-    Write-Host ("  CLI : {0}" -f (Join-Path $cliOut 'mcdl.exe'))
-    Write-Host ("  GUI : {0}" -f (Join-Path $guiOut 'McDownload.Gui.exe'))
-    Write-Host ("  DLL : {0}" -f (Join-Path (Join-Path $root 'native\build\out') 'mcdnative.dll'))
+    Write-Host ("  CLI : {0}" -f (Join-Path $cliOut 'downcraft.exe'))
+    Write-Host ("  GUI : {0}" -f (Join-Path $guiOut 'DownCraft.Gui.exe'))
+    Write-Host ("  DLL : {0}" -f (Join-Path (Join-Path $root 'native\build\out') 'downcraft_native.dll'))
     exit 0
 }
 catch {

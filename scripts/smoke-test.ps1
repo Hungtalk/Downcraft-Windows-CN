@@ -30,9 +30,9 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 
 if (-not $CliPath) {
-    $candidate = Join-Path $root "src\McDownload.Cli\bin\$Configuration\net10.0\mcdl.dll"
+    $candidate = Join-Path $root "src\DownCraft.Cli\bin\$Configuration\net10.0\downcraft.dll"
     if (-not (Test-Path $candidate)) {
-        throw "mcdl.dll not found: $candidate. Run scripts\build.ps1 first."
+        throw "downcraft.dll not found: $candidate. Run scripts\build.ps1 first."
     }
     $CliPath = $candidate
 }
@@ -59,7 +59,7 @@ function Assert-True([bool]$condition, [string]$message) {
 
 function Invoke-Mcdl([string[]]$arguments) {
     $all = @($CliPath) + $arguments
-    Write-Host ("  > mcdl {0}" -f ($arguments -join ' ')) -ForegroundColor DarkGray
+    Write-Host ("  > downcraft {0}" -f ($arguments -join ' ')) -ForegroundColor DarkGray
     # Out-Host keeps the child output off this function's return pipeline.
     & dotnet @all 2>&1 | Out-Host
     return $LASTEXITCODE

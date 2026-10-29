@@ -14,19 +14,24 @@
     <NoWarn>$(NoWarn);CA5350;CA1305;CA2101;CA1711;CA1869;CA1822;CA1859;CA1054;CA1002;CA2227;CA1720;CA1062;CA2007;CA1031</NoWarn>
     <InvariantGlobalization>false</InvariantGlobalization>
     <NeutralLanguage>zh-Hans</NeutralLanguage>
-    <Company>McDownload</Company>
-    <Product>McDownload</Product>
+    <Company>DownCraft</Company>
+    <Product>DownCraft</Product>
+    <AssemblyTitle>DownCraft</AssemblyTitle>
+    <Description>Downloads Minecraft (vanilla, Forge, NeoForge, Fabric, Quilt) into a standard .minecraft folder for third-party launchers.</Description>
+    <Authors>hungtalk</Authors>
     <Version>1.0.0</Version>
-    <Copyright>MIT License</Copyright>
+    <Copyright>Copyright (c) 2026 hungtalk</Copyright>
+    <RepositoryUrl>https://github.com/hungtalk/DownCraft</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <!-- Native artifacts are dropped into native/build/out by scripts/build-native.ps1 and
-       copied next to every managed assembly that P/Invokes mcdnative.dll. -->
-  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)native/build/out/mcdnative.dll')">
-    <None Include="$(MSBuildThisFileDirectory)native/build/out/mcdnative.dll"
+       copied next to every managed assembly that P/Invokes downcraft_native.dll. -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)native/build/out/downcraft_native.dll')">
+    <None Include="$(MSBuildThisFileDirectory)native/build/out/downcraft_native.dll"
           Condition="'$(UseWPF)' == 'true' Or '$(OutputType)' == 'Exe'"
           CopyToOutputDirectory="PreserveNewest"
-          Link="mcdnative.dll" />
+          Link="downcraft_native.dll" />
   </ItemGroup>
 
 </Project>

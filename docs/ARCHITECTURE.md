@@ -12,12 +12,12 @@
 
 ```
 ┌─────────────────────────────┐   ┌─────────────────────────────┐
-│ McDownload.Gui (WPF)        │   │ McDownload.Cli (mcdl)       │
+│ DownCraft.Gui (WPF)        │   │ DownCraft.Cli (downcraft)       │
 │ MainViewModel / UiReporter  │   │ ConsoleReporter / Commands  │
 └──────────────┬──────────────┘   └──────────────┬──────────────┘
                │  IReporter (日志 + 进度)          │
 ┌──────────────▼──────────────────────────────────▼──────────────┐
-│ McDownload.Core                                                 │
+│ DownCraft.Core                                                 │
 │  MinecraftInstaller ── 编排：清单→版本→原版→加载器→启动器配置     │
 │  VanillaInstaller    ── 生成/执行 InstallPlan（client/库/资源）   │
 │  LoaderInstaller     ── Fabric/Quilt 合并；Forge/NeoForge 安装器  │
@@ -27,9 +27,9 @@
 │  SourceRouter/Catalog/Health/Breaker ── 下载源与排序             │
 │  Meta / Util / Native ── 模型、规则、路径、SHA-1、ZIP            │
 └──────────────┬──────────────────────────────────────────────────┘
-               │ DllImport("mcdnative.dll", Cdecl)
+               │ DllImport("downcraft_native.dll", Cdecl)
 ┌──────────────▼──────────────┐
-│ mcdnative.dll (C++20, /MT)  │  SHA-1(文件/内存)、CRC32、ZIP 中央目录解析 + 解压、磁盘空间
+│ downcraft_native.dll (C++20, /MT)  │  SHA-1(文件/内存)、CRC32、ZIP 中央目录解析 + 解压、磁盘空间
 └─────────────────────────────┘
 ```
 
@@ -44,7 +44,7 @@
 | `Downloader` | HTTP 执行器：单文件多候选 URL、Rang 续传、SHA-1 校验、失败换源、熔断 |
 | `SourceRouter` | `ArtifactKind + SourceContext → 有序 URL 列表`（模板展开、评分、去重） |
 | `SourceCatalog` | 下载源集合：内置 JSON、用户覆盖、`WithOrder` |
-| `SourceHealthStore` | 各源实测延迟与失败次数，落盘 `<gameDir>/.mcdl/source-health.json` |
+| `SourceHealthStore` | 各源实测延迟与失败次数，落盘 `<gameDir>/.downcraft/source-health.json` |
 | `SourceBreaker` | 会话内熔断：某源对某类文件连续失败 3 次后本轮跳过 |
 | `LoaderInstaller` | Fabric/Quilt 元数据合并；Forge/NeoForge 安装器下载、依赖预置、执行、结果识别 |
 | `JavaRuntimeManager` | `JAVA_HOME`/PATH/常见安装目录/自带 runtime 探测；缺失时按 Mojang 清单下载 |
@@ -88,7 +88,7 @@ Forge/NeoForge 的两个工程化处理：
 
 1. **依赖预置**：读取安装器内 `install_profile.json`，把 `libraries` 与 `processors[].classpath`
    先用镜像下到 `libraries/`，安装器发现本地已有就不会再去连（常常不可达的）官方 Maven。
-2. **临时目录隔离**：给安装器传 `-Djava.io.tmpdir=<gameDir>/.mcdl/tmp`。
+2. **临时目录隔离**：给安装器传 `-Djava.io.tmpdir=<gameDir>/.downcraft/tmp`。
    某些安全软件会阻止「D 盘程序写 C 盘 TEMP」，这曾导致 Forge 处理器 `AccessDeniedException`；
    隔离后稳定复现成功。
 
@@ -119,17 +119,17 @@ DownloadTask(Kind, SourceContext{VersionId, MavenPath, AssetHash, OriginalUrl, S
 
 ## 原生模块
 
-`native/include/mcdl_native.h` 定义 9 个 C ABI：`mcdl_version`、`mcdl_sha1_file`、
-`mcdl_sha1_bytes`、`mcdl_crc32_file`、`mcdl_zip_entry_size`、`mcdl_zip_read`、
-`mcdl_zip_extract`、`mcdl_zip_extract_all`、`mcdl_disk_free`。
+`native/include/downcraft_native.h` 定义 9 个 C ABI：`dc_version`、`dc_sha1_file`、
+`dc_sha1_bytes`、`dc_crc32_file`、`dc_zip_entry_size`、`dc_zip_read`、
+`dc_zip_extract`、`dc_zip_extract_all`、`dc_disk_free`。
 
 - 路径用 UTF-16，ZIP 条目名用 UTF-8（ZIP 规范）；所有函数捕获异常并返回负错误码。
-- `mcdl_zip_extract_all` 拒绝 `..`、绝对路径、盘符与 ADS，防 zip-slip。
+- `dc_zip_extract_all` 拒绝 `..`、绝对路径、盘符与 ADS，防 zip-slip。
 - 实现细节：CNG `bcrypt` 做 SHA-1/CRC32（本机 Windows 10 无 CRC32 算法时回退查表实现）；
   ntdll `RtlDecompressBufferEx` 做 deflate（本机不支持时回退自带 RFC 1951 实现）；
   `/MT` 静态 CRT，只依赖 `KERNEL32`/`bcrypt`/`ntdll`。
 - 托管侧 `NativeInterop` 每次调用都可能失败 → `Sha1` / `ZipService` 自动回退到
-  `System.Security.Cryptography` / `ZipArchive`。`mcdl doctor` 会显示 `mcdnative x.y (msvc)`
+  `System.Security.Cryptography` / `ZipArchive`。`downcraft doctor` 会显示 `downcraft_native x.y (msvc)`
   或回退原因。
 
 ## 并发与进度
@@ -138,7 +138,7 @@ DownloadTask(Kind, SourceContext{VersionId, MavenPath, AssetHash, OriginalUrl, S
   连接池 `MaxConnectionsPerServer` 与之对齐。
 - `ProgressPump` 把字节/条目计数聚合成结构体快照，**限流 ~8 次/秒**，避免刷屏或压垮 UI 线程。
 - 单文件超时 = `100s + 预期大小 / 64KB/s`（封顶 30 分钟），避免大文件被固定超时误杀。
-- 下载先写 `<file>.mcdl-part`，校验通过后原子改名；失败回滚进度计数。
+- 下载先写 `<file>.downcraft-part`，校验通过后原子改名；失败回滚进度计数。
 
 ## 失败与恢复
 
@@ -153,7 +153,7 @@ DownloadTask(Kind, SourceContext{VersionId, MavenPath, AssetHash, OriginalUrl, S
 
 ## 扩展点
 
-- **加下载站**：编辑 `%APPDATA%\McDownload\sources.json`（或 `mcdl sources export` 后改），
+- **加下载站**：编辑 `%APPDATA%\DownCraft\sources.json`（或 `downcraft sources export` 后改），
   新增一个 `DownloadSource`，写模板即可，无需改代码。见 [SOURCES.md](SOURCES.md)。
 - **加文件类型**：`ArtifactKind` 加枚举 + 对应源端点。
 - **换进度呈现**：实现 `IReporter`（CLI `ConsoleReporter`、GUI `UiReporter` 都是这样做的）。

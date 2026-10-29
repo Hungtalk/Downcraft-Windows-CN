@@ -3,21 +3,21 @@
 ## 运行前
 
 - 运行环境：Windows 10/11 x64，需要 .NET 10 运行时（自包含发布则不需要）。
-- 原生模块 `mcdnative.dll` 与 exe 放在同一目录即可；没有它会自动用托管实现（功能不变，稍慢）。
+- 原生模块 `downcraft_native.dll` 与 exe 放在同一目录即可；没有它会自动用托管实现（功能不变，稍慢）。
 - 默认目标目录：`%APPDATA%\.minecraft`（官方启动器的标准目录）。建议用 `-d` 显式指定你启动器使用的目录。
 
 ```powershell
 # 构建后直接运行
-src\McDownload.Cli\bin\Release\net10.0\mcdl.exe --help
-src\McDownload.Gui\bin\Release\net10.0-windows\McDownload.Gui.exe
+src\DownCraft.Cli\bin\Release\net10.0\downcraft.exe --help
+src\DownCraft.Gui\bin\Release\net10.0-windows\DownCraft.Gui.exe
 
 # 或从源码运行
-dotnet run --project src/McDownload.Cli -- install 1.20.1 --no-assets
+dotnet run --project src/DownCraft.Cli -- install 1.20.1 --no-assets
 ```
 
-## 命令行 `mcdl`
+## 命令行 `downcraft`
 
-### `mcdl install [版本] [选项]`
+### `downcraft install [版本] [选项]`
 
 缺省版本时使用**最新正式版**。
 
@@ -42,67 +42,67 @@ dotnet run --project src/McDownload.Cli -- install 1.20.1 --no-assets
 示例：
 
 ```powershell
-mcdl install                                   # 最新正式版，原版
-mcdl install 1.20.1 -d "D:\Games\.minecraft"
-mcdl install 1.20.1 --loader fabric
-mcdl install 1.20.1 --loader forge --loader-version 47.4.28
-mcdl install 1.21.1 --loader neoforge
-mcdl install 1.20.1 --loader quilt --no-assets
-mcdl install 1.21.4 -j 32 --source bmclapi,mojang
+downcraft install                                   # 最新正式版，原版
+downcraft install 1.20.1 -d "D:\Games\.minecraft"
+downcraft install 1.20.1 --loader fabric
+downcraft install 1.20.1 --loader forge --loader-version 47.4.28
+downcraft install 1.21.1 --loader neoforge
+downcraft install 1.20.1 --loader quilt --no-assets
+downcraft install 1.21.4 -j 32 --source bmclapi,mojang
 ```
 
-### `mcdl verify [版本] [选项]`
+### `downcraft verify [版本] [选项]`
 
 只读校验：按同样的选项重建文件清单，逐项检查大小与 SHA-1，**不下载**。
 适合「文件搬过机器/被清理过」之后自检，或离线环境确认完整性。
 
 ```powershell
-mcdl verify 1.20.1
-mcdl verify 1.20.1 --loader fabric -d "D:\Games\.minecraft"
+downcraft verify 1.20.1
+downcraft verify 1.20.1 --loader fabric -d "D:\Games\.minecraft"
 ```
 
 输出 `正常 N 个 / 缺失或损坏 M 个`；有缺失时退出码为 1。
 
-### `mcdl list`
+### `downcraft list`
 
 ```powershell
-mcdl list                 # 远程：默认列 20 个正式版
-mcdl list --all -n 50     # 含快照
-mcdl list --snapshot      # 只看快照
-mcdl list -q 1.20         # 搜索
-mcdl list --installed     # 本地：已安装的版本、类型、继承关系、jar 大小
+downcraft list                 # 远程：默认列 20 个正式版
+downcraft list --all -n 50     # 含快照
+downcraft list --snapshot      # 只看快照
+downcraft list -q 1.20         # 搜索
+downcraft list --installed     # 本地：已安装的版本、类型、继承关系、jar 大小
 ```
 
-### `mcdl loaders [版本] --kind <fabric|forge|neoforge|quilt>`
+### `downcraft loaders [版本] --kind <fabric|forge|neoforge|quilt>`
 
 列出某加载器可用于该游戏版本的所有版本（最新在前），并给出安装示例命令。
 
 ```powershell
-mcdl loaders 1.20.1 --kind fabric
-mcdl loaders 1.21.1 --kind neoforge
+downcraft loaders 1.20.1 --kind fabric
+downcraft loaders 1.21.1 --kind neoforge
 ```
 
-### `mcdl sources [list|test|enable|disable|export|path]`
+### `downcraft sources [list|test|enable|disable|export|path]`
 
 ```powershell
-mcdl sources list           # 表格：ID、名称、区域、优先级、启用状态、最近延迟
-mcdl sources test           # 重新测速
-mcdl sources disable neoforge
-mcdl sources export -o D:\mirror\sources.json
-mcdl sources path           # 用户配置路径（不存在则用内置配置）
+downcraft sources list           # 表格：ID、名称、区域、优先级、启用状态、最近延迟
+downcraft sources test           # 重新测速
+downcraft sources disable neoforge
+downcraft sources export -o D:\mirror\sources.json
+downcraft sources path           # 用户配置路径（不存在则用内置配置）
 ```
 
 详见 [SOURCES.md](SOURCES.md)。
 
-### `mcdl java`
+### `downcraft java`
 
 ```powershell
-mcdl java                  # 检测本机可用的 Java（>=8）
-mcdl java --list           # 列出 Mojang 提供的运行时组件与 Java 版本
-mcdl java --install 21     # 下载 Java 21 到 <dir>/runtime（默认 %APPDATA%\.minecraft）
+downcraft java                  # 检测本机可用的 Java（>=8）
+downcraft java --list           # 列出 Mojang 提供的运行时组件与 Java 版本
+downcraft java --install 21     # 下载 Java 21 到 <dir>/runtime（默认 %APPDATA%\.minecraft）
 ```
 
-### `mcdl doctor`
+### `downcraft doctor`
 
 一次性检查：系统信息、原生模块、目标目录可写性、磁盘空间、各源延迟、已装 Java、缓存位置。
 
@@ -118,7 +118,7 @@ mcdl java --install 21     # 下载 Java 21 到 <dir>/runtime（默认 %APPDATA%
 - **下载选项**：资源文件、`launcher_profiles.json`、自动 Java；并发数与下载源策略。
 - **开始下载 / 安装**：实时显示阶段、字节进度、速度、当前文件；日志按级别着色。
 - **取消**：立即中断；已下载文件保留，下次续传。
-- **校验文件**：等价于 `mcdl verify`。
+- **校验文件**：等价于 `downcraft verify`。
 
 ## 与启动器配合
 
@@ -136,8 +136,8 @@ mcdl java --install 21     # 下载 Java 21 到 <dir>/runtime（默认 %APPDATA%
 
 | 变量 | 作用 |
 | --- | --- |
-| `MCDL_NO_PROGRESS=1` | 命令行不渲染单行进度（适合 CI/日志） |
-| `MCDL_GUI_LOG=<path>` | 指定 GUI 崩溃日志路径 |
+| `DOWNCRAFT_NO_PROGRESS=1` | 命令行不渲染单行进度（适合 CI/日志） |
+| `DOWNCRAFT_GUI_LOG=<path>` | 指定 GUI 崩溃日志路径 |
 | `HTTP_PROXY` / `HTTPS_PROXY` | 标准代理变量，`HttpClient` 会自动使用 |
 
 ## 退出码
@@ -152,22 +152,22 @@ mcdl java --install 21     # 下载 Java 21 到 <dir>/runtime（默认 %APPDATA%
 ## 常见问题
 
 **「版本清单中没有 “xxx”」**
-版本号拼写不对，或该版本已被移除。先 `mcdl list -q <片段>` 确认。
+版本号拼写不对，或该版本已被移除。先 `downcraft list -q <片段>` 确认。
 
 **Forge/NeoForge 安装器失败**
 先看日志末尾的安装器输出（本工具会把最后 8–12 行原样贴出来）。常见原因：
 
 - 无法访问 Forge/NeoForge 官方 Maven：已内置「预置依赖 + BMCLAPI」策略，
-  若仍失败，检查 `mcdl sources test`，或手动指定 `--java-path` 别的 Java 重试；
+  若仍失败，检查 `downcraft sources test`，或手动指定 `--java-path` 别的 Java 重试；
 - 没有 Java：默认会尝试自动下载 Mojang 运行时；如果之前用 `--no-java` 关掉了，去掉该参数即可，
-  也可以先 `mcdl java --install 21` 准备好再装；
+  也可以先 `downcraft java --install 21` 准备好再装；
 - 安全软件拦截写入：换一个可写目录（`-d`），或把工具目录加入白名单。
 
 **「无法在 … 创建目录」**
 目标目录只读/无权限/被安全软件拦截。换目录，或给当前用户写权限。
 
 **某些文件一直 403 / 下载很慢**
-`mcdl doctor` 看各源延迟；用 `--source` 指定更快的源；或 `mcdl sources disable <慢源>`。
+`downcraft doctor` 看各源延迟；用 `--source` 指定更快的源；或 `downcraft sources disable <慢源>`。
 BMCLAPI 偶尔对个别 Maven 路径返回 403（上游镜像拒绝），会自动回退官方源。
 
 **资源文件太大 / 只想先能进游戏**
@@ -182,5 +182,5 @@ BMCLAPI 偶尔对个别 Maven 路径返回 403（上游镜像拒绝），会自�
 
 **能装多个版本到同一目录吗？**
 可以，`versions/` 下每个版本独立目录，`libraries`/`assets` 共享去重。
-示例：`mcdl install 1.20.1 --loader fabric` 与 `mcdl install 1.20.1 --loader forge`
+示例：`downcraft install 1.20.1 --loader fabric` 与 `downcraft install 1.20.1 --loader forge`
 可以装在同一个 `.minecraft`。
