@@ -4,6 +4,7 @@ obj/
 native/build/
 publish/
 artifacts/
+TestResults/
 
 # IDE
 .vs/
