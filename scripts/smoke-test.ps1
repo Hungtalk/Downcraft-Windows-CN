@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     End-to-end smoke test: installs one version with the CLI, validates the produced
@@ -23,7 +23,7 @@ param(
     [string]$Dir = '',
     [string]$CliPath = '',
     [ValidateSet('Debug', 'Release')]
-    [string]$Configuration = 'Debug'
+    [string]$Configuration = 'Release'
 )
 
 $ErrorActionPreference = 'Stop'

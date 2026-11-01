@@ -24,7 +24,7 @@ First public release.
 - **Seven download sites** — Mojang, BMCLAPI, Fabric, Quilt, Forge Maven, NeoForge Maven and
   the Aliyun Maven mirror, described entirely by `sources.json` so new mirrors need no code.
 - **Reliable transfers** — latency probing with automatic ordering, per-file mirror fallback,
-  `.part` resume, SHA-1 + size verification, corrupted-file requeue and a per-(source, kind)
+  `.downcraft-part` resume, SHA-1 + size verification, corrupted-file requeue and a per-(source, kind)
   circuit breaker.
 - **Java runtime provisioning** — Mojang Java runtimes (`jre-legacy` … `java-runtime-delta`)
   are downloaded into `runtime/<component>/<platform>/<component>` when no suitable JVM exists.
@@ -50,4 +50,4 @@ First public release.
   handled by the managed `ZipArchive` fallback instead.
 - No built-in proxy UI; system / `HTTP_PROXY` / `HTTPS_PROXY` settings are honoured.
 
-[1.0.0]: https://github.com/hungtalk/DownCraft/releases/tag/v1.0.0
+[1.0.0]: https://github.com/Hungtalk/Dawncraft-Windows-CN/releases/tag/v1.0.0

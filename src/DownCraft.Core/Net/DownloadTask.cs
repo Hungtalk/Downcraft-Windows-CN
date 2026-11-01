@@ -71,7 +71,7 @@ public sealed class DownloaderOptions
     /// <summary>Attempts per URL before rotating to the next mirror.</summary>
     public int RetriesPerUrl { get; init; } = 2;
 
-    public string UserAgent { get; init; } = "DownCraft/1.0 (+https://github.com/hungtalk/DownCraft)";
+    public string UserAgent { get; init; } = "DownCraft/1.0 (+https://github.com/Hungtalk/Dawncraft-Windows-CN)";
 
     /// <summary>Minimum time budget for a request, before the size-based extension is applied.</summary>
     public TimeSpan BaseTimeout { get; init; } = TimeSpan.FromSeconds(100);

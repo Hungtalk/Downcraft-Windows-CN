@@ -24,7 +24,7 @@
 
 ## 下载与安装
 
-到 [Releases](https://github.com/hungtalk/DownCraft/releases) 下载对应压缩包：
+到 [Releases](https://github.com/Hungtalk/Dawncraft-Windows-CN/releases) 下载对应压缩包：
 
 | 包 | 说明 |
 | --- | --- |
@@ -41,7 +41,8 @@ DownCraft/
 ├─ README.md / LICENSE / CHANGELOG.md
 ```
 
-校验和在同一次 Release 的 `SHA256SUMS.txt` 里。也可以从源码构建，见下文。
+校验和在同一次 Release 的 `SHA256SUMS.txt` 里；Windows 下可
+`Get-FileHash .\DownCraft-<版本>-win-x64.zip -Algorithm SHA256` 自行核对。也可以从源码构建，见下文。
 
 ---
 
@@ -59,7 +60,7 @@ DownCraft 补齐这一环：按官方元数据把文件放到正确位置，并�
 | 原版安装 | `client.jar`、`libraries`（含 Mojang `rules` 平台过滤、旧版 natives 解压）、`assets`（索引 + 哈希对象 + 旧版 `virtual`/`map_to_resources`）、日志配置 |
 | Mod 加载器 | **Forge**、**NeoForge**（含 1.20.1 的 `net.neoforged:forge` 旧坐标）、**Fabric**、**Quilt** |
 | 多下载源 | 7 个内置站点（见下表），支持自定义 `sources.json`；按实测延迟自动排序，失败自动切换 |
-| 下载可靠性 | 并发下载、`.part` 断点续传、SHA-1 + 大小校验、坏文件自动重下、单站点熔断降级 |
+| 下载可靠性 | 并发下载、`.downcraft-part` 断点续传、SHA-1 + 大小校验、坏文件自动重下、单站点熔断降级 |
 | Java 运行时 | 本机没 Java 时自动下载 Mojang 官方运行时（`java-runtime-gamma`/`delta` 等），供 Forge/NeoForge 安装器使用 |
 | 加载器依赖预置 | 解析安装器内的 `install_profile.json`，**先用镜像把安装器要用的库下好**，绕开被墙的 `maven.neoforged.net` |
 | 启动器兼容 | 写入标准 `versions/<id>/<id>.json`（加载器用 `inheritsFrom`）与 `launcher_profiles.json` |
@@ -92,6 +93,8 @@ dotnet run --project src/DownCraft.Gui        # 或运行构建产物 DownCraft.
 
 ### 命令行
 
+（解压版直接运行 `downcraft.exe`，把所在目录加入 `PATH` 后即可写作 `downcraft`。）
+
 ```powershell
 # 原版（默认装到 %APPDATA%\.minecraft）
 downcraft install 1.20.1
@@ -110,7 +113,7 @@ downcraft verify 1.20.1 --loader fabric -d "D:\Games\.minecraft"
 downcraft doctor
 ```
 
-完整参数见 [docs/USAGE.md](docs/USAGE.md)。
+其他子命令：`list`、`loaders`、`sources`、`java`、`version`。完整参数见 [docs/USAGE.md](docs/USAGE.md)。
 
 ## 安装出来是什么样
 
@@ -177,7 +180,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\release.ps1
 发布包在 `artifacts/release/`。发布流程见 [docs/RELEASING.md](docs/RELEASING.md)。
 
 > PowerShell 默认执行策略可能禁止运行本地脚本，用 `powershell -ExecutionPolicy Bypass -File ...`；
-> 脚本保存为 UTF-8 **带 BOM**，以保证 Windows PowerShell 5.1 正确显示中文。
+> 脚本保存为 UTF-8，其中带 BOM 的脚本可避免 Windows PowerShell 5.1 的编码问题。
 
 ### 测试
 
@@ -199,18 +202,18 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\smoke-test.ps1 -Load
 
 ## 已验证
 
-在本机（Windows 10 21H2 / .NET 10.0.12）实际跑通：
+在本机（Windows 10 21H2 / .NET 10.0.12–10.0.14）实际跑通：
 
 | 场景 | 结果 |
 | --- | --- |
-| 原版 1.20.1（含 3575 个资源文件，621 MB） | 全部下载并校验通过 |
+| 原版 1.20.1（3575 个资源文件，资源约 621 MB） | 全部下载并校验通过 |
 | 原版 26.3（最新版，新版本号方案） | 76 个文件 / 123 MB，通过 |
 | Fabric 1.20.1（0.20.1） | profile 合并 + 8 个库，通过 |
 | Quilt 1.20.1（0.20.0-beta.9） | 通过 |
 | Forge 1.20.1（47.4.28） | 自动装 Java 17 运行时，官方安装器执行成功 |
 | NeoForge 1.21.1（21.1.265） | 自动装 Java 21 运行时；官方 Maven 不可达时经 BMCLAPI 预置依赖后成功 |
-| 断点/幂等 | 重复执行时 74 个文件全部跳过 |
-| 完整性校验 | `downcraft verify` 74 个文件正常，0 损坏 |
+| 断点/幂等（Fabric 1.20.1） | 重复执行时 74 个文件全部跳过 |
+| 完整性校验（Fabric 1.20.1） | `downcraft verify` 74 个文件正常，0 损坏 |
 | 单元测试 | 148 个通过 |
 | GUI | 通过 UI Automation 真实点「开始下载 / 安装」完成一次安装 |
 
@@ -238,4 +241,4 @@ MIT，见 [LICENSE](LICENSE)。更新记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 ---
 
-其他文档：[架构](docs/ARCHITECTURE.md) · [下载源](docs/SOURCES.md) · [用法](docs/USAGE.md) · [发布流程](docs/RELEASING.md)
+其他文档：[架构](docs/ARCHITECTURE.md) · [下载源](docs/SOURCES.md) · [用法](docs/USAGE.md) · [发布流程](docs/RELEASING.md) · [仓库](https://github.com/Hungtalk/Dawncraft-Windows-CN) · [问题反馈](https://github.com/Hungtalk/Dawncraft-Windows-CN/issues)

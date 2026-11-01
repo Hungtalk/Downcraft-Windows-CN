@@ -112,7 +112,7 @@ DownloadTask(Kind, SourceContext{VersionId, MavenPath, AssetHash, OriginalUrl, S
 
 失败语义分层：
 
-- `HashMismatchException`：内容不对，删 `.part`，立即换源；
+- `HashMismatchException`：内容不对，删 `.downcraft-part`，立即换源；
 - `HttpRequestException`：按状态码区分「该源没有」与「暂时性错误」；
 - `DownloadFailedException`：所有候选都失败；
 - `InstallFailedException`：安装级失败，携带可展示的细节列表（CLI/GUI 都直接显示）。
@@ -148,7 +148,7 @@ DownloadTask(Kind, SourceContext{VersionId, MavenPath, AssetHash, OriginalUrl, S
 | 版本 JSON 写盘失败（权限/杀软） | 警告，继续用内存数据 |
 | 元数据缓存目录不可写 | 警告，不使用缓存，不阻断安装 |
 | 单文件全部源失败 | 记录到结果 `Errors`，原始关键文件失败则整体失败；资源文件失败只警告 |
-| 中断（Ctrl+C） | 保留 `.part`，下次续传；退出码 130 |
+| 中断（Ctrl+C） | 保留 `.downcraft-part`，下次续传；退出码 130 |
 | 重复执行 | 先比大小与 SHA-1，命中即跳过（幂等） |
 
 ## 扩展点
