@@ -5,8 +5,8 @@
 <h1 align="center">DownCraft</h1>
 
 <p align="center">
-  <a href="https://github.com/hungtalk/downcraft-windows-cn/actions/workflows/build.yml"><img alt="Build" src="https://github.com/hungtalk/downcraft-windows-cn/actions/workflows/build.yml/badge.svg"></a>
-  <a href="https://github.com/hungtalk/downcraft-windows-cn/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/hungtalk/downcraft-windows-cn?label=release"></a>
+  <a href="https://github.com/Hungtalk/Downcraft-Windows-CN/actions/workflows/build.yml"><img alt="Build" src="https://github.com/Hungtalk/Downcraft-Windows-CN/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/Hungtalk/Downcraft-Windows-CN/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/Hungtalk/Downcraft-Windows-CN?label=release"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512bd4.svg">
   <img alt="Windows 10/11 x64" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078d4.svg">
