@@ -5,10 +5,11 @@
 <h1 align="center">DownCraft</h1>
 
 <p align="center">
+  <a href="https://github.com/hungtalk/downcraft-windows-cn/actions/workflows/build.yml"><img alt="Build" src="https://github.com/hungtalk/downcraft-windows-cn/actions/workflows/build.yml/badge.svg"></a>
+  <a href="https://github.com/hungtalk/downcraft-windows-cn/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/hungtalk/downcraft-windows-cn?label=release"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt=".NET 10" src="https://img.shields.io/badge/.NET-10-512bd4.svg">
   <img alt="Windows 10/11 x64" src="https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-0078d4.svg">
-  <a href="CHANGELOG.md"><img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-success.svg"></a>
 </p>
 
 **给「不支持下载游戏本体」的第三方启动器准备的 Minecraft 下载器。**
