@@ -24,7 +24,7 @@
 
 ## 下载与安装
 
-到 [Releases](https://github.com/Hungtalk/Dawncraft-Windows-CN/releases) 下载对应压缩包：
+到 [Releases](https://github.com/Hungtalk/Downcraft-Windows-CN/releases) 下载对应压缩包：
 
 | 包 | 说明 |
 | --- | --- |
@@ -241,4 +241,4 @@ MIT，见 [LICENSE](LICENSE)。更新记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 ---
 
-其他文档：[架构](docs/ARCHITECTURE.md) · [下载源](docs/SOURCES.md) · [用法](docs/USAGE.md) · [发布流程](docs/RELEASING.md) · [仓库](https://github.com/Hungtalk/Dawncraft-Windows-CN) · [问题反馈](https://github.com/Hungtalk/Dawncraft-Windows-CN/issues)
+其他文档：[架构](docs/ARCHITECTURE.md) · [下载源](docs/SOURCES.md) · [用法](docs/USAGE.md) · [发布流程](docs/RELEASING.md) · [仓库](https://github.com/Hungtalk/Downcraft-Windows-CN) · [问题反馈](https://github.com/Hungtalk/Downcraft-Windows-CN/issues)

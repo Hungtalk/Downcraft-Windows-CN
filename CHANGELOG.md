@@ -50,4 +50,4 @@ First public release.
   handled by the managed `ZipArchive` fallback instead.
 - No built-in proxy UI; system / `HTTP_PROXY` / `HTTPS_PROXY` settings are honoured.
 
-[1.0.0]: https://github.com/Hungtalk/Dawncraft-Windows-CN/releases/tag/v1.0.0
+[1.0.0]: https://github.com/Hungtalk/Downcraft-Windows-CN/releases/tag/v1.0.0

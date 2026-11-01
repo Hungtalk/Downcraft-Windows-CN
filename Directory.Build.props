@@ -18,10 +18,10 @@
     <Product>DownCraft</Product>
     <AssemblyTitle>DownCraft</AssemblyTitle>
     <Description>Downloads Minecraft (vanilla, Forge, NeoForge, Fabric, Quilt) into a standard .minecraft folder for third-party launchers.</Description>
-    <Authors>hungtalk</Authors>
+    <Authors>Hungtalk114</Authors>
     <Version>1.0.0</Version>
-    <Copyright>Copyright (c) 2026 hungtalk</Copyright>
-    <RepositoryUrl>https://github.com/Hungtalk/Dawncraft-Windows-CN</RepositoryUrl>
+    <Copyright>Copyright (c) 2026 Hungtalk114</Copyright>
+    <RepositoryUrl>https://github.com/Hungtalk/Downcraft-Windows-CN</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
